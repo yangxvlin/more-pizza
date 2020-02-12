@@ -6,7 +6,6 @@ Description: attempt the question
 """
 
 import sys
-import numpy as np
 
 
 OUTPUT_DIR = "out/"
@@ -29,28 +28,18 @@ def backpack_plan(max_value, n_item, weight):
 
     # 2-dimensional version
     dp = [[0 for _ in range(max_value + 1)] for _ in range(n_item + 1)]
-    # print((n_item + 1) * (max_value + 1))
-    # dp = np.zeros((n_item + 1, max_value + 1))
-    # choose_item = [[False for _ in range(max_value + 1)] for _ in range(n_item + 1)]
     for i in range(1, n_item + 1):
         for j in range(1, max_value + 1):
             dp[i][j] = dp[i - 1][j]
-            # choose_item[i][j] = False
             if j >= weight[i - 1]:
-                # pre = dp[i][j]
                 dp[i][j] = max(dp[i][j], dp[i - 1][j - weight[i - 1]] + weight[i - 1])
-                # if dp[i-1][j - weight[i-1]] + weight[i-1] > pre:
-                #     choose_item[i][j] = True
 
     j = max_value
     for i in range(n_item-1, -1, -1):
-        # print(i, j, dp[i][j], dp[i-1][j-weight[i]] + weight[i])
         if dp[i+1][j] == dp[i][j-weight[i]] + weight[i]:
             j -= weight[i]
             choose_item[i] = True
 
-    # print(dp[-1][-1])
-    # print(choose_item)
     return choose_item
 
 
