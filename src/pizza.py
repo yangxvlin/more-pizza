@@ -43,6 +43,43 @@ def backpack_plan(max_value, n_item, weight):
     return choose_item
 
 
+def simulation(max_value, n_item, weight):
+    best_solution = []
+
+    score = 0
+    i = n_item - 1
+    test1 = True
+    test2 = True
+    while i >= 0 and test1:
+        current_best_solution = []
+        j = i
+        cur_sum = 0
+
+        while j >= 0 and test2:
+            temp = weight[j]
+            cur_try = cur_sum + temp
+            if cur_try <= max_value:
+                cur_sum += temp
+                current_best_solution.append(j)
+                if cur_try == max_value:
+                    test1 = False
+                    test2 = False
+
+            j -= 1
+
+        if score < cur_sum:
+            score = cur_sum
+            best_solution = current_best_solution
+        if len(best_solution) == n_item:
+            test1 = False
+
+        i -= 1
+
+        print(best_solution)
+
+    return best_solution
+
+
 def read_input(file_path: str):
     with open(file_path) as file:
         input_lines = file.readlines()
@@ -71,6 +108,9 @@ def write_output(file_name: str, pizza_chosen_plan):
 
 if __name__ == "__main__":
     max_slices, n_types, type_slices = read_input(sys.argv[1])
-    # print(max_slices, n_types, type_slices)
-    pizza_chosen = backpack_plan(max_slices, n_types, type_slices)
+    pizza_chosen = None
+    try:
+        pizza_chosen = backpack_plan(max_slices, n_types, type_slices)
+    except MemoryError:
+        pizza_chosen = simulation(max_slices, n_types, type_slices)
     write_output(sys.argv[1].split('.')[0][3:], pizza_chosen)
